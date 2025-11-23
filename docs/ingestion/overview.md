@@ -46,17 +46,21 @@ Video File
     ↓
 [1] Time-based Segmentation → Overlapping Chunk IDs (2-3 min chunks, 15-30s overlap)
     ↓
-[2] Audio Pipeline → Speakers + Transcripts + Audio Clusters
+[2] Audio Pipeline → Speakers + Transcripts + Anonymous Audio Clusters
     ↓
-[3] Visual Pipeline → Faces + Character Clusters + Actor IDs
+[3] Visual Pipeline → Faces + Anonymous Character Clusters
     ↓
-[4] Speaker-Face Linking → Character-Dialogue Mapping
+[4] Speaker-Face Linking → Anonymous Speaker-Face Mappings
     ↓
 [5] VLM Analysis → Chunk Descriptions (location, actions, mood)
     ↓
-[6] Chunk Object Unification → Rich Multimodal Records
+[6] Chunk Object Unification → Rich Multimodal Records (pending_labeling)
     ↓
-Storage → Chunk Objects ready for retrieval
+Storage → Chunk Objects (pending_labeling state)
+    ↓
+[Curation/Labeling Pipeline] → Character/Actor IDs assigned
+    ↓
+Storage → Chunk Objects (approved, ready for retrieval)
 ```
 
 ## Component Dependencies
@@ -68,7 +72,12 @@ Storage → Chunk Objects ready for retrieval
 
 ## Output
 
-The ingestion pipeline produces **chunk objects** that are stored and made available for the retrieval pipeline. See [Data Models](../shared/data_models.md) for the complete chunk object schema.
+The ingestion pipeline produces **chunk objects** in `pending_labeling` state. These objects contain:
+- All multimodal data (audio, visual, contextual)
+- **Anonymous clusters** (no character/actor IDs yet)
+- Ready for the [Curation/Labeling Pipeline](../curation/overview.md)
+
+After labeling, chunk objects move to `approved` state and are available for the retrieval pipeline. See [Data Models](../shared/data_models.md) for the complete chunk object schema.
 
 ## Related Documentation
 
@@ -80,4 +89,5 @@ The ingestion pipeline produces **chunk objects** that are stored and made avail
 - [Component 6: Unification](./component_6_unification.md)
 - [Data Flow](./data_flow.md)
 - [Chunk Object Schema](../shared/data_models.md)
+- [Curation/Labeling Pipeline](../curation/overview.md) - Character and actor ID assignment
 

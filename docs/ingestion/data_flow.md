@@ -20,8 +20,9 @@ Video File
     ↓
 [3] Visual Pipeline (Face Detection + Tracking + Clustering)
     ├── Input: Video segments from Component 1
-    ├── Output: Face tracks, character IDs, actor IDs, face embeddings
+    ├── Output: Face tracks, anonymous character clusters, face embeddings
     └── Can run in parallel with Components 2 and 5
+    └── Note: Character/actor IDs assigned later in Curation Pipeline
     ↓
 [4] Speaker-Face Linking
     ├── Input: Speaker segments (Component 2) + Face tracks (Component 3)
@@ -39,7 +40,8 @@ Video File
     └── Depends on: All previous components
     ↓
 Storage
-    └── Chunk objects ready for retrieval
+    └── Chunk objects (pending_labeling state)
+    └── Note: After Curation/Labeling Pipeline, objects move to approved state
 ```
 
 ## Component Dependencies
@@ -130,5 +132,6 @@ Overlapping chunks create duplicate data that must be handled:
 
 - [Ingestion Pipeline Overview](./overview.md)
 - [Storage Interface](../shared/storage_interface.md)
+- [Curation/Labeling Pipeline](../curation/overview.md)
 - [Retrieval Pipeline](../retrieval/overview.md)
 

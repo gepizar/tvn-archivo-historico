@@ -21,19 +21,9 @@ For each face track:
 - Cluster embeddings across episode or entire series
 - Generate **anonymous character clusters** (Cluster A, Cluster B, etc.)
 - Handle variations in lighting, angle, age, makeup, etc.
+- Store cluster IDs and embeddings for later labeling
 
-### 3. Assign Character IDs
-- Manually label major recurring clusters at the beginning (e.g., "Cluster A = Jon Snow")
-- Propagate labels across all chunks where that cluster appears
-- Maintain character identity throughout the series
-- Handle character appearance changes (aging, makeup, costume changes)
-- Support for minor/recurring characters
-
-### 4. Assign Actor IDs (cross-series)
-- Compare face embeddings across different shows
-- When a cluster from Show 1 is extremely similar to a cluster from Show 2, treat them as the same actor
-- Assign shared actor ID for cross-series actor recognition
-- Enable queries like "all scenes where this actor appears in any series"
+**Note:** Character and actor IDs are assigned in the [Curation/Labeling Pipeline](../curation/overview.md), not during ingestion. This allows the ingestion pipeline to run continuously without manual intervention.
 
 ## Output per Chunk
 
@@ -42,10 +32,11 @@ For each face track:
   - Time ranges within chunk
   - Bounding boxes and positions
   - Frame indices
-- **Character IDs**: Which characters appear in the chunk
-- **Actor IDs**: Which actors are present (if cross-series matching is enabled)
+- **Anonymous character clusters**: Cluster IDs (Cluster A, B, C, etc.) - no character names yet
 - **Face embeddings**: Vector representations for each face track
-- **Cluster associations**: Character cluster and actor cluster assignments
+- **Cluster associations**: Which anonymous clusters appear in the chunk
+
+**Note:** Character IDs and Actor IDs are assigned later in the [Curation/Labeling Pipeline](../curation/overview.md). The ingestion pipeline only produces anonymous clusters to avoid blocking on manual labeling.
 
 ## Key Considerations
 
@@ -74,4 +65,5 @@ For each face track:
 - [Ingestion Pipeline Overview](./overview.md)
 - [Component 4: Speaker-Face Linking](./component_4_linking.md)
 - [Data Flow](./data_flow.md)
+- [Curation/Labeling Pipeline](../curation/overview.md) - Character and actor ID assignment
 
