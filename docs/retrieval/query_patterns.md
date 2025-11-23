@@ -1,0 +1,155 @@
+# Query Patterns
+
+## Overview
+
+This document describes the types of queries the retrieval pipeline should support, with examples. These patterns guide the design of the retrieval API and ensure the chunk object schema includes all necessary fields.
+
+## 1. Semantic and Text-based Queries
+
+Support natural language queries over dialogue and chunk descriptions.
+
+### Examples
+
+- "Chunks where Jon Snow talks about honor"
+- "Chunks where characters argue in a kitchen at night"
+- "Driving chunks in the desert where the conversation is tense"
+- "Scenes where someone mentions betrayal"
+- "Chunks with dialogue about family"
+
+### Required Chunk Object Fields
+
+- Dialogue text (per character)
+- Scene descriptions (VLM captions)
+- Natural language summaries
+
+## 2. Structured Filtering
+
+Filter by specific attributes without semantic search.
+
+### Filter by Character
+
+- "All chunks where Character X appears"
+- "All chunks where Character X speaks"
+- "All chunks where Character X and Character Y appear together"
+- "All chunks where Character X appears but doesn't speak"
+
+### Filter by Actor
+
+- "All chunks where this actor appears in any series"
+- "All chunks where Actor X speaks in Show Y"
+- "Cross-series actor queries"
+
+### Filter by Show/Episode
+
+- "All chunks in Season 2, Episode 5"
+- "All chunks in a specific show"
+- "All chunks in a time range (e.g., first 10 minutes of episode)"
+
+### Filter by Location/Environment
+
+- "All forest chunks"
+- "All chunks in a car"
+- "All nighttime chunks"
+- "All desert chunks at sunset"
+
+### Filter by Actions
+
+- "All chunks with fighting"
+- "All chunks with driving"
+- "All chunks with characters hiding"
+
+### Combined Structured Filters
+
+- "Forest chunks with at least three characters, including Character X"
+- "All chunks where this actor appears in any series"
+- "Nighttime car scenes in Season 3"
+
+### Required Chunk Object Fields
+
+- Character IDs
+- Actor IDs
+- Show, season, episode
+- Location/environment tags
+- Action tags
+- Time ranges
+
+## 3. Combined Queries
+
+Combine semantic search with structured filters for precise queries.
+
+### Examples
+
+- "All desert driving chunks at sunset where Walter White is present, even if he doesn't speak"
+- "Chunks in the forest with people hiding or sneaking, where this actor appears"
+- "Kitchen scenes where Character X talks about betrayal"
+- "Nighttime car scenes where someone mentions money"
+
+### Query Structure
+
+```
+Semantic Query + Structured Filters → Combined Results
+```
+
+## 4. Complex Multi-modal Queries
+
+Queries that span multiple modalities (audio, visual, context).
+
+### Examples
+
+- "Chunks where Character X appears visually but doesn't speak"
+- "Chunks where this face appears in the background"
+- "Scenes where Character X talks about Y while in location Z"
+- "Chunks with tense dialogue in a calm visual setting"
+
+## 5. Temporal Queries
+
+Queries based on time relationships.
+
+### Examples
+
+- "Chunks within the first 10 minutes of Episode 5"
+- "All chunks between timestamp X and Y"
+- "Chunks in chronological order for a specific character arc"
+
+## Query Requirements Summary
+
+To support these query patterns, chunk objects must include:
+
+### Audio/Text
+- Dialogue text per character
+- Full transcripts
+- Speaker-to-character mappings
+
+### Visual
+- Character IDs (present and speaking)
+- Actor IDs
+- Face track information
+
+### Context
+- Location/environment tags
+- Action tags
+- Object tags
+- Mood/atmosphere
+- Natural language captions
+
+### Metadata
+- Show, season, episode
+- Time ranges (start/end)
+- Chunk ID
+- Overlap indicators
+
+## Future Query Patterns (TBD)
+
+As the system evolves, additional query patterns may be supported:
+
+- **Graph queries**: "Show me the conversation network between characters"
+- **Temporal sequences**: "Show me the progression of Character X's dialogue about topic Y"
+- **Similarity search**: "Show me chunks similar to this one"
+- **Analytics queries**: "How many times does Character X appear in Season 2?"
+
+## Related Documentation
+
+- [Retrieval Pipeline Overview](./overview.md)
+- [API Contract](./api_contract.md)
+- [Chunk Object Schema](../shared/data_models.md)
+
