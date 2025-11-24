@@ -10,7 +10,7 @@ The ingestion pipeline consists of six sequential components:
 
 1. **Episode Ingestion and Segmentation** - Split video into overlapping time-based chunks
 2. **Audio Pipeline** - ASR, speaker diarization, and clustering
-3. **Visual Pipeline** - Face detection, tracking, and character/actor identification
+3. **Visual Pipeline** - Face detection, tracking, and clustering
 4. **Speaker-Face Linking** - Associate audio speakers with visual characters
 5. **Scene Understanding** - VLM-based visual context analysis
 6. **Chunk Object Unification** - Combine all data into rich chunk records

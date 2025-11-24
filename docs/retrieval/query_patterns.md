@@ -32,6 +32,10 @@ Filter by specific attributes without semantic search.
 - "All chunks where Character X speaks"
 - "All chunks where Character X and Character Y appear together"
 - "All chunks where Character X appears but doesn't speak"
+- "All chunks where Character X, Character Y, and Character Z appear together"
+- "All chunks with at least three specific characters present"
+- "All chunks where multiple characters from a specific group appear"
+- "All chunks where Character X appears with any two other characters"
 
 ### Filter by Actor
 
@@ -51,6 +55,12 @@ Filter by specific attributes without semantic search.
 - "All chunks in a car"
 - "All nighttime chunks"
 - "All desert chunks at sunset"
+- "All chunks set in New York"
+- "All chunks set in Los Angeles"
+- "All chunks in a specific city or place"
+- "All chunks set in Albuquerque"
+- "All chunks set in King's Landing"
+- "All chunks in a specific location from the show's world"
 
 ### Filter by Actions
 
@@ -63,6 +73,10 @@ Filter by specific attributes without semantic search.
 - "Forest chunks with at least three characters, including Character X"
 - "All chunks where this actor appears in any series"
 - "Nighttime car scenes in Season 3"
+- "All chunks in New York with Character X and Character Y present"
+- "All chunks set in Albuquerque where Walter White and Jesse Pinkman appear together"
+- "Chunks in a specific city with multiple characters (3+) present"
+- "All chunks in King's Landing with at least four characters"
 
 ### Required Chunk Object Fields
 
@@ -83,6 +97,10 @@ Combine semantic search with structured filters for precise queries.
 - "Chunks in the forest with people hiding or sneaking, where this actor appears"
 - "Kitchen scenes where Character X talks about betrayal"
 - "Nighttime car scenes where someone mentions money"
+- "All chunks in Albuquerque where Walter White, Jesse Pinkman, and Skyler White appear together"
+- "Chunks set in New York where Character X and Character Y discuss betrayal"
+- "Scenes in a specific city where multiple characters argue about money"
+- "All chunks in King's Landing where at least three main characters appear together"
 
 ### Query Structure
 
@@ -127,6 +145,7 @@ To support these query patterns, chunk objects must include:
 
 ### Context
 - Location/environment tags
+- Specific place names (cities, locations from the show's world)
 - Action tags
 - Object tags
 - Mood/atmosphere
