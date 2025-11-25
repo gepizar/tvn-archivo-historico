@@ -1,0 +1,17 @@
+# Core dependencies
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+python-multipart>=0.0.6
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+python-dotenv>=1.0.0
+
+# Video processing
+# Note: ffmpeg-python is optional, we'll use subprocess for FFmpeg
+
+# HTTP client for callbacks
+httpx>=0.25.0
+
+# Utilities
+python-dateutil>=2.8.0
+
