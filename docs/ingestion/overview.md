@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The ingestion pipeline processes raw video content and enriches it with multimodal data (audio, visual, and contextual information) to create rich, queryable chunk objects.
+The ingestion pipeline processes raw video content and enriches it with multimodal data (audio, visual, and contextual information) to create rich, queryable chunk objects. The pipeline is **content-type agnostic**—it works identically for TV series, news programs, talk shows, documentaries, and other content types. Content-specific associations (characters, roles, actors) are assigned during the curation/labeling phase.
 
 ## Pipeline Components
 
@@ -35,9 +35,11 @@ The **chunk ID** serves as the central join key that unifies all components in t
 
 Each chunk is enriched with:
 - **Audio**: Transcripts, speaker segments, dialogue, audio embeddings
-- **Visual**: Face tracks, character IDs, actor IDs, face embeddings
+- **Visual**: Face tracks, person clusters (anonymous), face embeddings
 - **Context**: Location, actions, objects, mood, scene descriptions (from VLM)
-- **Metadata**: Show, episode, season, timestamps, overlap indicators
+- **Metadata**: Show/program, episode, season, content type, timestamps, overlap indicators
+
+**Note**: The ingestion pipeline creates **anonymous person clusters** (not character/actor IDs). Person identities, roles, and character associations are assigned during curation.
 
 ## Data Flow
 
@@ -48,7 +50,7 @@ Video File
     ↓
 [2] Audio Pipeline → Speakers + Transcripts + Anonymous Audio Clusters
     ↓
-[3] Visual Pipeline → Faces + Anonymous Character Clusters
+[3] Visual Pipeline → Faces + Anonymous Person Clusters
     ↓
 [4] Speaker-Face Linking → Anonymous Speaker-Face Mappings
     ↓
@@ -58,7 +60,10 @@ Video File
     ↓
 Storage → Chunk Objects (pending_labeling state)
     ↓
-[Curation/Labeling Pipeline] → Character/Actor IDs assigned
+[Curation/Labeling Pipeline] → Person IDs assigned, with optional:
+    ├── Character IDs (for fictional content)
+    ├── Actor IDs (for fictional content)
+    └── Roles (for non-fictional content, e.g., "news anchor", "reporter")
     ↓
 Storage → Chunk Objects (approved, ready for retrieval)
 ```
@@ -74,10 +79,17 @@ Storage → Chunk Objects (approved, ready for retrieval)
 
 The ingestion pipeline produces **chunk objects** in `pending_labeling` state. These objects contain:
 - All multimodal data (audio, visual, contextual)
-- **Anonymous clusters** (no character/actor IDs yet)
+- **Anonymous person clusters** (no person/character/actor IDs yet)
+- Content type metadata (from show/program metadata)
 - Ready for the [Curation/Labeling Pipeline](../curation/overview.md)
 
-After labeling, chunk objects move to `approved` state and are available for the retrieval pipeline. See [Data Models](../shared/data_models.md) for the complete chunk object schema.
+After labeling, chunk objects move to `approved` state and are available for the retrieval pipeline. The curation layer assigns:
+- **Person IDs** (always assigned)
+- **Character IDs** (optional, for fictional content like TV series)
+- **Actor IDs** (optional, for fictional content)
+- **Roles** (optional, for non-fictional content like news programs, e.g., "news anchor", "reporter")
+
+See [Data Models](../shared/data_models.md) for the complete chunk object schema.
 
 ## Related Documentation
 

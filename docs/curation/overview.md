@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The Curation/Labeling Pipeline assigns character IDs and actor IDs to anonymous clusters created by the ingestion pipeline. This phase runs **asynchronously** after ingestion, allowing continuous GPU processing while labeling happens separately, eliminating bottlenecks.
+The Curation/Labeling Pipeline assigns person IDs to anonymous clusters created by the ingestion pipeline. For fictional content (TV series), it also assigns character IDs and actor IDs. For non-fictional content (news, talk shows, etc.), it assigns roles (e.g., "news anchor", "reporter", "guest"). This phase runs **asynchronously** after ingestion, allowing continuous GPU processing while labeling happens separately, eliminating bottlenecks.
 
 ## Key Design Principles
 
@@ -32,13 +32,18 @@ Runs without manual intervention, producing chunk objects with anonymous cluster
 **Output:** Chunk objects in `pending_labeling` state
 
 ### Phase 2: Manual Labeling (Curation Pipeline)
-Human curators assign character and actor IDs to clusters.
+Human curators assign person IDs to clusters, with optional character/actor/role associations based on content type.
 
 **Process:**
 - Review cluster representatives (best face images per cluster)
-- Assign character IDs (e.g., "Cluster A = Jon Snow")
-- Assign actor IDs (e.g., "Cluster A = Kit Harington")
-- Cross-series actor linking (e.g., "Show 1 Cluster A = Show 2 Cluster B = Same Actor")
+- Assign person IDs (e.g., "Cluster A = Maria Rodriguez")
+- For fictional content (TV series):
+  - Assign character IDs (e.g., "Cluster A = Jon Snow")
+  - Assign actor IDs (e.g., "Cluster A = Kit Harington")
+  - Cross-series actor linking (e.g., "Show 1 Cluster A = Show 2 Cluster B = Same Actor")
+- For non-fictional content (news, talk shows, etc.):
+  - Assign roles (e.g., "Cluster A = news anchor", "Cluster B = reporter")
+- Cross-content person linking (e.g., "TV Series Cluster A = News Program Cluster B = Same Person")
 
 **Interface:**
 - Labeling UI showing cluster representatives
@@ -49,10 +54,11 @@ Human curators assign character and actor IDs to clusters.
 System suggests labels to accelerate the process.
 
 **Sources:**
-- **Transcript analysis**: Extract character names from dialogue ("I'm Jon Snow")
-- **External databases**: Match clusters to IMDb/cast lists
+- **Transcript analysis**: Extract person names from dialogue ("I'm Jon Snow", "This is Maria Rodriguez reporting")
+- **External databases**: Match clusters to IMDb/cast lists (for actors), news databases (for anchors/reporters)
 - **Cross-modal hints**: Link speaker clusters to face clusters
-- **Cross-series matching**: Compare clusters across shows for actor identification
+- **Cross-series matching**: Compare clusters across shows for actor identification (for fictional content)
+- **Cross-content matching**: Compare clusters across content types for person identification
 
 **Confidence levels:**
 - High confidence: Auto-label and flag for review
@@ -78,9 +84,12 @@ Chunk Objects (pending_labeling)
     ↓
 [Labeling Interface]
     ├── Manual Labeling
-    │   ├── Character ID Assignment
-    │   ├── Actor ID Assignment
-    │   └── Cross-series Actor Linking
+    │   ├── Person ID Assignment (always required)
+    │   ├── Character ID Assignment (for fictional content)
+    │   ├── Actor ID Assignment (for fictional content)
+    │   ├── Role Assignment (for non-fictional content)
+    │   ├── Cross-series Actor Linking (for fictional content)
+    │   └── Cross-content Person Linking
     └── Auto-labeling Suggestions
     ↓
 [Label Approval]
@@ -102,11 +111,15 @@ Labels are stored separately from chunk objects to enable efficient updates:
 
 ### Cluster Labels Table
 - `clusterId`: Unique cluster identifier (e.g., "show_1_face_cluster_A")
-- `clusterType`: Type of cluster (character/actor)
-- `label`: Assigned label (e.g., "Jon Snow" or "Kit Harington")
+- `clusterType`: Type of cluster (face/audio)
+- `label`: Assigned label (e.g., "Jon Snow", "Kit Harington", "Maria Rodriguez", "News Anchor")
+- `personId`: Person ID (always set when labeled)
+- `characterId`: Character ID (optional, for fictional content)
+- `actorId`: Actor ID (optional, for fictional content)
+- `role`: Role name (optional, for non-fictional content, e.g., "news anchor", "reporter")
 - `confidence`: Confidence score (if auto-labeled)
 - `status`: `pending` / `approved` / `rejected`
-- `source`: `manual` / `auto_transcript` / `auto_external_db` / etc.
+- `source`: `manual` / `auto_transcript` / `auto_external_db` / `auto_cross_content` / etc.
 - `updatedAt`: Timestamp of last update
 
 ### Label Propagation

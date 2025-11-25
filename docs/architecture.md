@@ -9,30 +9,32 @@ This system processes video content by breaking it down into overlapping time-ba
 The system consists of four main phases:
 
 ### 1. Ingestion Pipeline
-Processes raw video content and enriches it with multimodal data (audio, visual, and contextual information). Produces chunk objects with anonymous clusters (no character/actor labels yet).
+Processes raw video content and enriches it with multimodal data (audio, visual, and contextual information). The pipeline is **content-type agnostic**—it works identically for TV series, news programs, talk shows, documentaries, and other content types. Produces chunk objects with anonymous person clusters (no person/character/actor/role labels yet).
 
 **Components:**
-1. Episode ingestion and segmentation
+1. Program/episode ingestion and segmentation
 2. Audio pipeline (ASR, speaker diarization, clustering)
-3. Visual pipeline (face detection, tracking, anonymous clustering)
+3. Visual pipeline (face detection, tracking, anonymous person clustering)
 4. Speaker-face linking
 5. Scene understanding (VLM-based)
 6. Chunk object unification
 
-**Output:** Chunk objects in `pending_labeling` state with anonymous clusters
+**Output:** Chunk objects in `pending_labeling` state with anonymous person clusters
 
 **Documentation:** [Ingestion Pipeline](./ingestion/overview.md)
 
 ### 2. Curation/Labeling Pipeline
-Assigns character IDs and actor IDs to anonymous clusters through manual labeling and/or auto-labeling. This phase runs asynchronously after ingestion, allowing continuous GPU processing while labeling happens separately.
+Assigns person IDs to anonymous clusters through manual labeling and/or auto-labeling. For fictional content (TV series), it also assigns character IDs and actor IDs. For non-fictional content (news, talk shows, etc.), it assigns roles (e.g., "news anchor", "reporter", "guest"). This phase runs asynchronously after ingestion, allowing continuous GPU processing while labeling happens separately.
 
 **Process:**
-1. Manual labeling interface for character/actor assignment
-2. Auto-labeling suggestions (from transcripts, external databases, cross-modal hints)
-3. Label approval and propagation
-4. Finalization: Update chunk objects and prepare for retrieval
+1. Manual labeling interface for person assignment (always required)
+2. For fictional content: Character and actor ID assignment
+3. For non-fictional content: Role assignment
+4. Auto-labeling suggestions (from transcripts, external databases, cross-modal hints, cross-content matching)
+5. Label approval and propagation
+6. Finalization: Update chunk objects and prepare for retrieval
 
-**Output:** Chunk objects in `approved` state with character/actor IDs
+**Output:** Chunk objects in `approved` state with person IDs and optional character/actor/role associations
 
 **Documentation:** [Curation/Labeling Pipeline](./curation/overview.md)
 
@@ -41,8 +43,9 @@ Enables queryable access to the enriched chunk objects, supporting semantic sear
 
 **Capabilities:**
 - Semantic and text-based queries
-- Structured filtering (by character, actor, show, location, etc.)
+- Structured filtering (by person, character, actor, role, content type, show, location, etc.)
 - Combined queries (semantic + structured)
+- Cross-content type queries (e.g., find person across TV series and news programs)
 - Overlap handling and deduplication
 
 **Documentation:** [Retrieval Pipeline](./retrieval/overview.md)
@@ -70,32 +73,39 @@ The **chunk ID** serves as the central join key that:
 
 ### Separation of Concerns
 
-- **Ingestion**: Produces chunk objects with anonymous clusters (automated, GPU-intensive)
-- **Curation**: Assigns labels to clusters (asynchronous, manual + auto-labeling)
-- **Retrieval**: Consumes labeled chunk objects (flexible implementation)
+- **Ingestion**: Produces chunk objects with anonymous person clusters (automated, GPU-intensive, content-type agnostic)
+- **Curation**: Assigns person IDs and optional character/actor/role associations to clusters (asynchronous, manual + auto-labeling, content-type aware)
+- **Retrieval**: Consumes labeled chunk objects (flexible implementation, supports all content types)
 - **UI**: Consumes retrieval API (independent development)
 
-### Never Force VLM to Guess Character Identities
+### Content-Type Agnostic Ingestion
 
-The VLM focuses on visual understanding (location, actions, objects, mood). Character identification comes from face recognition and speaker linking, ensuring reliable character data.
+The ingestion pipeline works identically for all content types (TV series, news, talk shows, documentaries, etc.), creating anonymous person clusters without knowing identities. Content-specific associations (characters for fictional content, roles for non-fictional content) are assigned during curation, allowing the system to improve through better labeling without reprocessing video.
+
+### Never Force VLM to Guess Person Identities
+
+The VLM focuses on visual understanding (location, actions, objects, mood). Person identification comes from face recognition and speaker linking, ensuring reliable person data. The VLM doesn't need to know whether a person is a character, actor, news anchor, or guest.
 
 ## System Flow
 
 ```
 Video File
     ↓
-[Ingestion Pipeline] (Automated, GPU-intensive)
+[Ingestion Pipeline] (Automated, GPU-intensive, Content-Type Agnostic)
     ├── [1] Time-based Segmentation → Overlapping Chunk IDs
     ├── [2] Audio Pipeline → Speakers + Transcripts + Anonymous Audio Clusters
-    ├── [3] Visual Pipeline → Faces + Anonymous Character Clusters
+    ├── [3] Visual Pipeline → Faces + Anonymous Person Clusters
     ├── [4] Speaker-Face Linking → Anonymous Speaker-Face Mappings
     ├── [5] VLM Analysis → Chunk Descriptions (location, actions, mood)
     └── [6] Chunk Object Unification → Chunk Objects (pending_labeling)
     ↓
 Storage → Chunk Objects (pending_labeling state)
     ↓
-[Curation/Labeling Pipeline] (Asynchronous, Manual + Auto-labeling)
+[Curation/Labeling Pipeline] (Asynchronous, Manual + Auto-labeling, Content-Type Aware)
     ├── Manual Labeling Interface
+    │   ├── Person ID Assignment (always required)
+    │   ├── Character/Actor Assignment (for fictional content)
+    │   └── Role Assignment (for non-fictional content)
     ├── Auto-labeling Suggestions
     ├── Label Approval & Propagation
     └── Finalization → Chunk Objects (approved state)
@@ -114,7 +124,7 @@ Storage → Chunk Objects (approved, ready for retrieval)
 ### Domain-Specific Documentation
 
 - **[Ingestion Pipeline](./ingestion/)** - Detailed documentation for all ingestion components
-- **[Curation/Labeling Pipeline](./curation/)** - Character and actor labeling workflow
+- **[Curation/Labeling Pipeline](./curation/)** - Person, character, actor, and role labeling workflow
 - **[Retrieval Pipeline](./retrieval/)** - Retrieval design, query patterns, and API contract
 - **[UI Layer](./ui/)** - UI architecture, user flows, and data presentation
 
