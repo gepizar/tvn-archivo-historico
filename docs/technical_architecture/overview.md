@@ -10,6 +10,7 @@ This document provides an overview of the technical architecture and serves as a
 
 - **[technology_stack.md](./technology_stack.md)** - Languages, frameworks, ML models, and infrastructure choices
 - **[component_apis.md](./component_apis.md)** - Component interfaces, APIs, and communication protocols
+- **[project_structure.md](./project_structure.md)** - Recommended codebase structure and organization
 - **[data_models.md](./data_models.md)** - Database schemas, embedding storage, and index structures
 - **[deployment.md](./deployment.md)** - System topology, scaling strategies, and resource requirements
 - **[performance.md](./performance.md)** - Processing estimates, storage requirements, and optimization strategies
