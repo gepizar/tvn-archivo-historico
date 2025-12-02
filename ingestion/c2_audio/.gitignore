@@ -1,0 +1,60 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# NeMo cache
+.nemo_cache/
+.cache/
+
+# Model downloads
+models/
+*.nemo
+
+# Output files
+*.json
+transcripts/
+output/
+
+# Audio files (if large)
+*.wav
+*.mp3
+*.flac
+*.m4a
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

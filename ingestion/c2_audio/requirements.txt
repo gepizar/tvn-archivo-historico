@@ -1,0 +1,15 @@
+# Requirements for audio transcription and diarization component
+# NVIDIA NeMo and dependencies
+
+# Core dependencies
+torch>=2.0.0
+numpy>=1.21.0
+omegaconf>=2.3.0
+
+# NeMo installation (install separately due to git dependency)
+# pip install Cython packaging
+# pip install git+https://github.com/NVIDIA/NeMo.git@main#egg=nemo_toolkit[asr]
+
+# Audio processing
+librosa>=0.10.0
+soundfile>=0.12.0
