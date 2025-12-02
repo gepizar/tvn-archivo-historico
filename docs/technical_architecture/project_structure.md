@@ -35,7 +35,7 @@ tvn-archivo-historico/
 │   │       ├── config.py          # Configuration management
 │   │       └── errors.py          # Custom exceptions
 │   │
-│   ├── component_1_segmentation/ # Component 1: API Service
+│   ├── component_1_chunking/ # Component 1: API Service
 │   │   ├── __init__.py
 │   │   ├── main.py                # FastAPI/Flask app entry point
 │   │   ├── api/                   # API routes
@@ -44,14 +44,14 @@ tvn-archivo-historico/
 │   │   │   └── schemas.py         # Request/response schemas
 │   │   ├── services/              # Business logic
 │   │   │   ├── __init__.py
-│   │   │   ├── segmentation.py   # Segmentation logic
+│   │   │   ├── chunking.py   # Chunking logic
 │   │   │   └── video_processor.py # Video processing
 │   │   ├── config/                # Component-specific config
 │   │   │   └── settings.py
 │   │   ├── tests/
 │   │   │   ├── __init__.py
 │   │   │   ├── test_api.py
-│   │   │   └── test_segmentation.py
+│   │   │   └── test_chunking.py
 │   │   ├── requirements.txt       # Component dependencies
 │   │   ├── Dockerfile             # Container definition
 │   │   └── README.md              # Component documentation
@@ -294,14 +294,14 @@ Utility scripts for development and operations:
 ### Component 1 (API) - Entry Point
 
 ```python
-# ingestion/component_1_segmentation/main.py
+# ingestion/component_1_chunking/main.py
 from fastapi import FastAPI
 from ingestion.shared.messaging import get_queue_client
 from ingestion.shared.storage import get_storage_client
 from .api.routes import router
 from .config.settings import settings
 
-app = FastAPI(title="Segmentation API")
+app = FastAPI(title="Chunking API")
 app.include_router(router)
 
 @app.on_event("startup")
@@ -485,7 +485,7 @@ docker-compose up
 **Option 2: Run components individually**:
 ```bash
 # Terminal 1: Component 1 API
-cd component_1_segmentation
+cd component_1_chunking
 source venv/bin/activate
 python main.py
 

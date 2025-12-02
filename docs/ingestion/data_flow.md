@@ -9,7 +9,7 @@ This document describes how data flows through the ingestion pipeline, including
 ```
 Video File
     ↓
-[1] Episode Ingestion and Segmentation
+[1] Episode Ingestion and Chunking
     ├── Output: Chunk IDs, temporal boundaries, audio segments, video segments
     └── Creates: Foundation for all subsequent processing
     ↓
@@ -49,7 +49,7 @@ Storage
 ### Dependency Graph
 
 ```
-Component 1 (Segmentation)
+Component 1 (Chunking)
     ├──→ Component 2 (Audio) [parallel with 3]
     ├──→ Component 3 (Visual) [parallel with 2]
     └──→ Component 5 (Scene Understanding) [parallel with 2-3]

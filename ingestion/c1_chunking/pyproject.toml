@@ -1,5 +1,5 @@
 [project]
-name = "c1-segmentation"
+name = "c1-chunking"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"

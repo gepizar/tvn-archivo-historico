@@ -8,7 +8,7 @@ The ingestion pipeline processes raw video content and enriches it with multimod
 
 The ingestion pipeline consists of six sequential components:
 
-1. **Episode Ingestion and Segmentation** - Split video into overlapping time-based chunks
+1. **Episode Ingestion and Chunking** - Split video into overlapping time-based chunks
 2. **Audio Pipeline** - ASR, speaker diarization, and clustering
 3. **Visual Pipeline** - Face detection, tracking, and clustering
 4. **Speaker-Face Linking** - Associate audio speakers with visual characters
@@ -46,7 +46,7 @@ Each chunk is enriched with:
 ```
 Video File
     ↓
-[1] Time-based Segmentation → Overlapping Chunk IDs (2-3 min chunks, 15-30s overlap)
+[1] Time-based Chunking → Overlapping Chunk IDs (2-3 min chunks, 15-30s overlap)
     ↓
 [2] Audio Pipeline → Speakers + Transcripts + Anonymous Audio Clusters
     ↓
@@ -70,7 +70,7 @@ Storage → Chunk Objects (approved, ready for retrieval)
 
 ## Component Dependencies
 
-- **Component 1** (Segmentation) is independent and must run first
+- **Component 1** (Chunking) is independent and must run first
 - **Components 2, 3, and 5** (Audio, Visual, and Scene Understanding) can run in parallel after Component 1
 - **Component 4** (Linking) depends on both Components 2 and 3
 - **Component 6** (Unification) depends on all previous components
@@ -93,7 +93,7 @@ See [Data Models](../shared/data_models.md) for the complete chunk object schema
 
 ## Related Documentation
 
-- [Component 1: Segmentation](./component_1_segmentation.md)
+- [Component 1: Chunking](./component_1_chunking.md)
 - [Component 2: Audio Pipeline](./component_2_audio.md)
 - [Component 3: Visual Pipeline](./component_3_visual.md)
 - [Component 4: Speaker-Face Linking](./component_4_linking.md)

@@ -1,5 +1,5 @@
 def main():
-    print("Hello from c1-segmentation!")
+    print("Hello from c1-chunking!")
 
 
 if __name__ == "__main__":

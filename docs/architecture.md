@@ -12,7 +12,7 @@ The system consists of four main phases:
 Processes raw video content and enriches it with multimodal data (audio, visual, and contextual information). The pipeline is **content-type agnostic**—it works identically for TV series, news programs, talk shows, documentaries, and other content types. Produces chunk objects with anonymous person clusters (no person/character/actor/role labels yet).
 
 **Components:**
-1. Program/episode ingestion and segmentation
+1. Program/episode ingestion and chunking
 2. Audio pipeline (ASR, speaker diarization, clustering)
 3. Visual pipeline (face detection, tracking, anonymous person clustering)
 4. Speaker-face linking
@@ -92,7 +92,7 @@ The VLM focuses on visual understanding (location, actions, objects, mood). Pers
 Video File
     ↓
 [Ingestion Pipeline] (Automated, GPU-intensive, Content-Type Agnostic)
-    ├── [1] Time-based Segmentation → Overlapping Chunk IDs
+    ├── [1] Time-based Chunking → Overlapping Chunk IDs
     ├── [2] Audio Pipeline → Speakers + Transcripts + Anonymous Audio Clusters
     ├── [3] Visual Pipeline → Faces + Anonymous Person Clusters
     ├── [4] Speaker-Face Linking → Anonymous Speaker-Face Mappings

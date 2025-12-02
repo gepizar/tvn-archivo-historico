@@ -1,4 +1,4 @@
-# Component 1: Episode Ingestion and Segmentation
+# Component 1: Episode Ingestion and Chunking
 
 ## Purpose
 
@@ -12,7 +12,7 @@ Split raw video content into overlapping time-based chunks, creating the foundat
 - Extract basic metadata (show, episode, season, duration)
 
 ### 2. Create Overlapping Time-based Chunks
-Segment video into fixed-duration, overlapping windows:
+Chunk video into fixed-duration, overlapping windows:
 - **Chunk duration**: 2-3 minutes (configurable)
 - **Overlap**: 15-30 seconds between consecutive chunks (configurable)
 - Each chunk receives a unique **chunk ID**

@@ -1,4 +1,4 @@
-# Component 1: Video Segmentation
+# Component 1: Video Chunking
 
 Video chunking service that splits videos into overlapping time-based segments.
 
@@ -12,7 +12,7 @@ Video chunking service that splits videos into overlapping time-based segments.
 Using `uv`:
 
 ```bash
-uv sync -r requirements.txt
+uv sync
 ```
 
 ## Usage

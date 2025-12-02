@@ -10,7 +10,7 @@ This document describes the interfaces, APIs, and communication protocols betwee
 
 These components expose HTTP APIs for external interaction:
 
-1. **Component 1: Episode Ingestion and Segmentation** - Entry point for video ingestion
+1. **Component 1: Episode Ingestion and Chunking** - Entry point for video ingestion
 2. **Component 6: Chunk Object Unification** - Optional API for status monitoring and manual triggers
 
 ### Internal Worker Components
@@ -27,7 +27,7 @@ These components operate as background workers that process tasks from a message
 ```
 External Client
     ↓ (HTTP)
-Component 1 API (Segmentation)
+Component 1 API (Chunking)
     ↓ (Message Queue)
 Orchestrator/Queue
     ├──→ Component 2 Worker (Audio)
@@ -306,7 +306,7 @@ All worker components consume messages from a shared message queue (e.g., Rabbit
 
 ### Component 1 → Orchestrator
 
-**Message Type:** `segmentation.completed`
+**Message Type:** `chunking.completed`
 
 **Payload:**
 ```json
