@@ -1,0 +1,3 @@
+# Requirements for video chunking component
+# The chunker uses subprocess to call ffmpeg, so no Python dependencies are required
+# This file is kept for consistency with uv sync workflow
